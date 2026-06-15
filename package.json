@@ -4,7 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "deploy": "npm run build && wrangler deploy",
+    "preview": "npm run build && wrangler dev"
   },
   "dependencies": {
     "@deepgram/sdk": "^5.4.0",
@@ -19,7 +21,9 @@
     "ws": "^8.21.0"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.40.2",
     "@vitejs/plugin-react": "^6.0.2",
-    "vite": "^8.0.16"
+    "vite": "^8.0.16",
+    "wrangler": "^4.100.0"
   }
 }
