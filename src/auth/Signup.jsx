@@ -12,17 +12,10 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     
-    // Get the current URL (works for both localhost and production)
-    const redirectUrl = window.location.origin
-    
-    const result = await signUpEmailPassword(email, password, {
-      options: {
-        redirectTo: redirectUrl
-      }
-    })
+    // Remove the options parameter - it's causing the error
+    const result = await signUpEmailPassword(email, password)
     
     if (!result.error) {
-      // Show verification message instead of auto-login
       setVerificationSent(true)
     }
   }
