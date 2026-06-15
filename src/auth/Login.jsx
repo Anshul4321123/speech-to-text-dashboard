@@ -1,12 +1,24 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useSignInEmailPassword } from '@nhost/react'
 
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [verificationMessage, setVerificationMessage] = useState('')
   const { signInEmailPassword, isLoading, error } = useSignInEmailPassword()
   const navigate = useNavigate()
+
+  // Check URL for verification ticket
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const ticket = params.get('ticket')
+    const type = params.get('type')
+    
+    if (ticket && type === 'emailVerify') {
+      setVerificationMessage('Email verified! You can now login.')
+    }
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -21,6 +33,11 @@ function Login() {
     <div style={styles.container}>
       <div style={styles.card}>
         <h1 style={styles.title}>Login</h1>
+        
+        {verificationMessage && (
+          <div style={styles.success}>{verificationMessage}</div>
+        )}
+        
         <form onSubmit={handleSubmit} style={styles.form}>
           <input
             type="email"
@@ -99,6 +116,15 @@ const styles = {
     color: 'red',
     fontSize: '14px',
     textAlign: 'center'
+  },
+  success: {
+    backgroundColor: '#d4edda',
+    color: '#155724',
+    padding: '10px',
+    borderRadius: '5px',
+    marginBottom: '15px',
+    textAlign: 'center',
+    fontSize: '14px'
   },
   link: {
     marginTop: '20px',

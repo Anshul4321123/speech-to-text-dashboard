@@ -5,16 +5,42 @@ import { useSignUpEmailPassword } from '@nhost/react'
 function Signup() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [verificationSent, setVerificationSent] = useState(false)
   const { signUpEmailPassword, isLoading, error } = useSignUpEmailPassword()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     
-    const result = await signUpEmailPassword(email, password)
+    // Get the current URL (works for both localhost and production)
+    const redirectUrl = window.location.origin
+    
+    const result = await signUpEmailPassword(email, password, {
+      options: {
+        redirectTo: redirectUrl
+      }
+    })
+    
     if (!result.error) {
-      navigate('/dashboard')
+      // Show verification message instead of auto-login
+      setVerificationSent(true)
     }
+  }
+
+  if (verificationSent) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.card}>
+          <h1 style={styles.title}>Verify Your Email</h1>
+          <div style={styles.verificationMessage}>
+            <p>📧 We've sent a verification email to:</p>
+            <p style={styles.email}>{email}</p>
+            <p>Please check your inbox and click the verification link to complete signup.</p>
+            <p style={styles.note}>After verification, you can <Link to="/login">login here</Link></p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -105,6 +131,20 @@ const styles = {
     marginTop: '20px',
     textAlign: 'center',
     color: '#666'
+  },
+  verificationMessage: {
+    textAlign: 'center',
+    lineHeight: '1.6'
+  },
+  email: {
+    fontWeight: 'bold',
+    color: '#667eea',
+    margin: '10px 0'
+  },
+  note: {
+    fontSize: '14px',
+    color: '#666',
+    marginTop: '20px'
   }
 }
 
